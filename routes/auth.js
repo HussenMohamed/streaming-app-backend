@@ -32,19 +32,19 @@ router.post("/login", async (req, res) => {
     if (match) {
       // create JWTs
       const accessToken = jwt.sign(
-        { username: foundUser.user_name },
+        { username: foundUser.username },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "30s" }
       );
-      console.log(`from auth controller : ${foundUser.Username}`);
+      console.log(`from auth controller : ${foundUser.username}`);
       const refreshToken = jwt.sign(
-        { username: foundUser.user_name },
+        { username: foundUser.username },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: "1d" }
       );
 
       // add the refresh token to the database
-      const addedToken = await addTokenToDb(refreshToken, foundUser.UserID);
+      const addedToken = await addTokenToDb(refreshToken, foundUser.userID);
 
       // set cookie with refresh token
       // res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
