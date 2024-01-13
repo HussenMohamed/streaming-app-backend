@@ -24,7 +24,7 @@ router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
     const foundUser = await findUser(username);
-    console.log(JSON.stringify(foundUser));
+    console.log("Found User" + JSON.stringify(foundUser));
     if (!foundUser) {
       return res.status(401).json({ error: "Authentication failed" });
     }
@@ -44,7 +44,7 @@ router.post("/login", async (req, res) => {
       );
 
       // add the refresh token to the database
-      const addedToken = await addTokenToDb(refreshToken, foundUser.userID);
+      const addedToken = await addTokenToDb(refreshToken, foundUser.userId);
 
       // set cookie with refresh token
       // res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
@@ -54,7 +54,7 @@ router.post("/login", async (req, res) => {
         secure: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
-
+      console.log(`from auth cookie : ${refreshToken}`);
       // send both access and refresh tokens in the response
       res.json({
         success: `User ${foundUser.username} is logged in!`,
@@ -68,5 +68,6 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+router.get("/refresh", require("../controllers/refreshTokenController"));
 
 module.exports = router;
